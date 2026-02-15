@@ -1,0 +1,28 @@
+
+name: Notificacion de Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Ejecutar programa
+        run: node index.js
+
+      - name: Enviar notificación a ntfy
+        if: success()
+        run: |
+          curl -d "🚀 Deploy Exitoso
+          Repositorio: \${{ github.repository }}
+          Rama: \${{ github.ref_name }}
+          Commit: \${{ github.sha }}
+          Autor: \${{ github.actor }}
+          Mensaje: \${{ github.event.head_commit.message }}
+          Estado: Codigo ejecutado correctamente" \
+          ntfy.sh/devops-itla
